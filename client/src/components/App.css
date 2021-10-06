@@ -1,0 +1,32 @@
+html, body {
+  margin:0;
+  background: #f6f9fc;
+}
+
+a, a:link, a:visited {
+  text-decoration: none;
+}
+
+.active {font-style: italic;}
+
+.navbar {
+  background-color: #99D4FF!important;
+  padding:10px 0;
+}
+
+.card {
+  height:100%;
+}
+
+body {
+  background: #fff;
+}
+
+#navbarMenu {
+  margin-top: 5px;
+}
+
+#navbarMenu button {margin-left: 10px;}
+.navbar .title {font-style: normal;margin-top: 5px;}
+
+.control {max-width: 500px;}
