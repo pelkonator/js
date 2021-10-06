@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {Container, Box, Button, Heading, TextField} from 'gestalt'
 import ToastMessage from './ToastMessage';
 import {setToken} from './../utils';
@@ -37,7 +37,7 @@ class Signin extends Component {
                 // set loading - false
                 this.setState({loading: false});
                 //show error msg
-                this.showToast(error.message);
+                this.showToast('Login error');
             }
         }
     }
@@ -48,9 +48,9 @@ class Signin extends Component {
         return !username || !password
     }
 
-    handleChange = ({event, value}) => {
+    handleChange = (event) => {
         event.persist();
-        this.setState({[event.target.name]: value});
+        this.setState({[event.target.name]: event.target.value});
     }
 
     showToast = (toastMessage) => {
@@ -60,19 +60,25 @@ class Signin extends Component {
 
     render() {
         return (
-            <Container>
-                <Box dangerouslySetInlineStyle={{__style: {backgroundColor:'#d6a3b1'}}} wrap shape="rounded" display="flex" justifyContent="center"  margin={4} padding={4}>
-                   <form onSubmit={this.handleSubmit} style={{display: 'inlineBlock', textAlign: 'center', maxWidth:450}}> 
-                        <Box marginBottom={2} display="flex" direction="column" alignItems="center">
-                            <Heading color="midnight">Welcome back!</Heading>
-                        </Box>
-                        <TextField id="username" type="text" name="username" placeholder="Username" onChange={this.handleChange} />
-                        <TextField id="password" type="password" name="password" placeholder="Password" onChange={this.handleChange} />                    
-                        <Button disabled={this.state.loading} inline color="blue" text="submit" type="submit"/>
-                   </form>
-                </Box>
+            <Fragment>
+                <div className="box" style={{maxWidth: '500px', margin: '0 auto'}}>
+                    <form onSubmit={this.handleSubmit} >
+                        <div className="field">
+                            <div className="control">
+                                <input class="input" id="username" type="text" name="username" placeholder="Username" onChange={this.handleChange}  autofocus=""/>
+                            </div>
+                        </div>
+
+                        <div className="field">
+                            <div className="control">
+                                <input class="input" id="password" type="password" name="password" placeholder="Password" onChange={this.handleChange}/>
+                            </div>
+                        </div>
+                        <button type="submit" disabled={this.state.loading}  className="button is-block is-primary is-large is-fullwidth">Login</button>
+                    </form>
+                </div>
                 <ToastMessage show={this.state.toast} message={this.state.toastMessage}/>
-            </Container>
+            </Fragment>
         );
     }
 }

@@ -3,7 +3,7 @@ import {Toast, Box} from 'gestalt';
 
 const ToastMessage = ({show, message}) => (
     show && (
-        <Box display="flex" direction="column" alignItems="center" position="relative">
+        <Box style={{marginTop: '50px'}} display="flex" direction="column" alignItems="center" position="relative">
             <Toast color="orange" text={message}/>
         </Box>
     )

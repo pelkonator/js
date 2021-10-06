@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {Container, Box, Button, Heading, Text, TextField} from 'gestalt'
 import ToastMessage from './ToastMessage';
 import {setToken} from './../utils';
@@ -49,9 +49,9 @@ class Signup extends Component {
         return !username || !email || !password
     }
 
-    handleChange = ({event, value}) => {
+    handleChange = (event) => {
         event.persist();
-        this.setState({[event.target.name]: value});
+        this.setState({[event.target.name]: event.target.value});
     }
 
     showToast = (toastMessage) => {
@@ -61,21 +61,31 @@ class Signup extends Component {
 
     render() {
         return (
-            <Container>
-                <Box dangerouslySetInlineStyle={{__style: {backgroundColor:'#ebe2da'}}} wrap shape="rounded" display="flex" justifyContent="center"  margin={4} padding={4}>
-                   <form onSubmit={this.handleSubmit} style={{display: 'inlineBlock', textAlign: 'center', maxWidth:450}}> 
-                        <Box marginBottom={2} display="flex" direction="column" alignItems="center">
-                            <Heading color="midnight">Let's Get Started</Heading>
-                            <Text italic color="orchid">Sign up to open some accounts!</Text>
-                        </Box>
-                        <TextField id="username" type="text" name="username" placeholder="Username" onChange={this.handleChange} />
-                        <TextField id="email" type="email" name="email" placeholder="Email address" onChange={this.handleChange} />
-                        <TextField id="password" type="password" name="password" placeholder="Password" onChange={this.handleChange} />                    
-                        <Button disabled={this.state.loading} inline color="blue" text="submit" type="submit"/>
-                   </form>
-                </Box>
+            <Fragment>
+                <div className="box" style={{maxWidth: '500px', margin: '0 auto'}}>
+                    <form onSubmit={this.handleSubmit} >
+                        <div className="field">
+                            <div className="control">
+                                <input class="input" id="username" type="text" name="username" placeholder="Username" onChange={this.handleChange}  autofocus=""/>
+                            </div>
+                        </div>
+
+                        <div className="field">
+                            <div className="control">
+                                <input class="input" id="email" type="email" name="email" placeholder="Email address" onChange={this.handleChange}  autofocus=""/>
+                            </div>
+                        </div>
+
+                        <div className="field">
+                            <div className="control">
+                                <input class="input" id="password" type="password" name="password" placeholder="Password" onChange={this.handleChange}/>
+                            </div>
+                        </div>
+                        <button type="submit" disabled={this.state.loading}  className="button is-block is-primary is-large is-fullwidth">Register</button>
+                    </form>
+                </div>
                 <ToastMessage show={this.state.toast} message={this.state.toastMessage}/>
-            </Container>
+            </Fragment>
         );
     }
 }

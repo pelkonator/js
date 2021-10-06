@@ -31,16 +31,19 @@ const strapi = new Strapi(apiUrl);
      render() {
          return (
             <Fragment>
-                <h1 className="title">New author</h1>
-                <div className="field">
-                    <label className="label">Name</label>
-                    <div className="control">
-                        <input  class="input" placeholder="Author name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                <div style={{maxWidth: '500px', margin: '0 auto'}}>
+                    <h1 className="title">New author</h1>
+                    <div className="box">
+                        <div className="field">
+                            <label className="label">Name</label>
+                            <div className="control">
+                                <input  class="input" placeholder="Author name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                            </div>
+                        </div>
+                        <button style={{marginBottom: '20px'}}  disabled={!this.state.name} onClick={this.addAuthor} className="button is-primary">Submit</button>
                     </div>
-                </div>
-                <button style={{marginBottom: '20px'}}  disabled={!this.state.name} onClick={this.addAuthor} className="button is-primary">Submit</button>
-                <br/>
-                <Link to='/books/new'>Back</Link>               
+                    <Link to='/books/new'>Back</Link>    
+                </div>           
             </Fragment>
          );
      }

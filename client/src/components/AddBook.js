@@ -60,35 +60,37 @@ const strapi = new Strapi(apiUrl);
                 {
                     !this.state.loading &&
                     <Fragment>
-                        <div className="field">
-                            <label className="label">Name</label>
-                            <div className="control">
-                                <input  class="input" placeholder="Name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                        <div style={{maxWidth: '500px', margin: '0 auto'}}>
+                            <h1 className="title">New book</h1>
+                            <div className="box">
+                                <div className="field">
+                                    <label className="label">Name</label>
+                                    <div className="control">
+                                        <input  class="input" placeholder="Name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <label className="label">Author</label>
+                                    <div style={{display:'inline-block'}} class="select">
+                                        <select value={this.state.author} onChange={this.handleChange}  id="author" name="author">
+                                            <option key="0">Choose an author</option>
+                                            {this.state.authors.map(author=>{
+                                                return <option key={author.id} value={author.id}>{author.name}</option>
+                                            })}
+                                        </select>
+                                    </div>
+                                    <div style={{display:'inline-block', marginLeft:'10px', marginTop: '10px'}}>Or <Link to='/authors/new'>Add new</Link></div>
+                                </div>
+                                <div className="field">
+                                    <label className="label">Year</label>
+                                    <div className="control">
+                                        <input  class="input" placeholder="Year" name="year"  type="number" value={this.state.year} onChange={this.handleChange} />
+                                    </div>
+                                </div>
+                                <button style={{marginBottom: '20px'}}  onClick={this.addBook} disabled={!this.state.name || !this.state.author || !this.state.year} className="button is-primary">Submit</button>
                             </div>
+                            <Link to='/books'>Back</Link>
                         </div>
-                        <div className="field">
-                            <label className="label">Author</label>
-                            <div style={{display:'inline-block'}} class="select">
-                                <select value={this.state.author} onChange={this.handleChange}  id="author" name="author">
-                                    <option key="0">Choose an author</option>
-                                    {this.state.authors.map(author=>{
-                                        return <option key={author.id} value={author.id}>{author.name}</option>
-                                    })}
-                                </select>
-                            </div>
-                            <div style={{display:'inline-block', marginLeft:'10px', marginTop: '10px'}}>Or <Link to='/authors/new'>Add new</Link></div>
-                        </div>
-                        <div className="field">
-                            <label className="label">Year</label>
-                            <div className="control">
-                                <input  class="input" placeholder="Year" name="year"  type="number" value={this.state.year} onChange={this.handleChange} />
-                            </div>
-                        </div>
-                       
-
-                        <button style={{marginBottom: '20px'}}  onClick={this.addBook} disabled={!this.state.name || !this.state.author || !this.state.year} className="button is-primary">Submit</button>
-                        <br/>
-                        <Link to='/books'>Back</Link>
                     </Fragment>
                 }
                
