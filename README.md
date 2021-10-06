@@ -10,4 +10,4 @@ open the admin panel from the console link, register an admin account, open Sett
 React frontend:
 -cd client
 -npm install
--nmp start
+-npm start
