@@ -5,7 +5,6 @@ import App from './components/App';
 import Signin from './components/Signin';
 import Books from './components/Books';
 import Signup from './components/Signup';
-import Checkout from './components/Checkout';
 import AddBook from './components/AddBook';
 import AddAuthor from './components/AddAuthor';
 import Navbar from './components/Navbar';
@@ -32,7 +31,6 @@ const Root = () => (
                         <Route component={App} exact path="/" />
                         <Route component={Signin} path="/signin" />
                         <Route component={Signup} path="/signup" />
-                        <PrivateRoute component={Checkout} path="/checkout" />
                         <Route component={AddBook} path="/books/new" />
                         <Route component={AddAuthor} path="/authors/new" />
                         <Route component={Books} path="/books" />                

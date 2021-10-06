@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import {NavLink, withRouter} from 'react-router-dom'
-import {getToken, clearToken, clearCart} from './../utils'
+import {getToken, clearToken } from './../utils'
 
 class Navbar extends Component {
 
     handleSignout = () => {
         clearToken();
-        clearCart();
         this.props.history.push('/');
     }
     
