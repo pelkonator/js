@@ -1,26 +1,19 @@
 import React, { Component, Fragment } from 'react';
-import Strapi from 'strapi-sdk-javascript/build/main'
+import strapi from '../utils/strapi';
 import {Link } from 'react-router-dom'
-import history from "./../utils/history";
-const apiUrl = process.env.API_URL || 'http://localhost:1337'
-const strapi = new Strapi(apiUrl);
- 
+import history from "./../utils/history"; 
+import {addAuthor, authorUpdateFieldNewRecord} from '../actions/authors';
+import { connect } from 'react-redux';
  class AddAuthor extends Component {
-     state = {
-        name:'',
-     }
-
     handleChange = (event) => {
         event.persist();
-        this.setState({[event.target.name]: event.target.value});
+        this.props.authorUpdateFieldNewRecord(event);
     }
 
     addAuthor = async () => {
-        const {name} = this.state;
+        const {name} = this.props.authors.newRecord;
         try {
-            await strapi.createEntry('authors',{
-                name
-            });            
+            await this.props.addAuthor({name});
             history.push("/books/new");
         } catch (error) {
             console.log(error);
@@ -29,6 +22,7 @@ const strapi = new Strapi(apiUrl);
     }
 
      render() {
+         const {name} = this.props.authors.newRecord;
          return (
             <Fragment>
                 <div style={{maxWidth: '500px', margin: '0 auto'}}>
@@ -37,10 +31,10 @@ const strapi = new Strapi(apiUrl);
                         <div className="field">
                             <label className="label">Name</label>
                             <div className="control">
-                                <input  class="input" placeholder="Author name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                                <input  className="input" placeholder="Author name" name="name" type="text" value={name} onChange={this.handleChange} />
                             </div>
                         </div>
-                        <button style={{marginBottom: '20px'}}  disabled={!this.state.name} onClick={this.addAuthor} className="button is-primary">Submit</button>
+                        <button style={{marginBottom: '20px'}}  disabled={!name} onClick={this.addAuthor} className="button is-primary">Submit</button>
                     </div>
                     <Link to='/books/new'>Back</Link>    
                 </div>           
@@ -49,4 +43,10 @@ const strapi = new Strapi(apiUrl);
      }
  }
  
- export default AddAuthor;
+
+ 
+ const mapStateToProps = state => ({
+    authors: state.authors
+})
+ 
+export default connect(mapStateToProps, {addAuthor, authorUpdateFieldNewRecord})(AddAuthor);

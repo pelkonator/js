@@ -1,35 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import Strapi from 'strapi-sdk-javascript/build/main'
-import {Link} from 'react-router-dom'
+import strapi from '../utils/strapi';
+import {Link, NavLink} from 'react-router-dom'
 import Loader from './Loader';
-const apiUrl = process.env.API_URL || 'http://localhost:1337'
-const strapi = new Strapi(apiUrl);
+import { connect } from 'react-redux';
+import axios from 'axios';
+import {editBook, loadBooks} from '../actions/books';
  
  class Books extends Component {
-     state = {
-         books:[], 
-         brandName:'',
-         cartItems: [],
-         loading: true
-     }
     async componentDidMount() {        
-        try {
-            const response = await strapi.request('POST', '/graphql', {data: {query: `query { books {id name year favourite author {name} } }`}})
-            this.setState({books: response.data.books})
-        } catch (error) {
-            console.log(error);
-        }
-        this.setState({loading: false});
+        this.props.loadBooks();        
     }
 
     handleChange = async (event, id) => {
         event.persist();
         try {
-            const checked = event.target.checked;
-            await strapi.updateEntry('books', id, {
-                favourite: checked
-            });
-            this.setState({books: this.state.books.map(b=>b.id===id?{...b, favourite: checked}:b) });
+            this.props.editBook({id, payload: {favourite: event.target.checked}});
         } catch (error) {
             console.log(error);
             alert('saving error, please check your input')
@@ -38,23 +23,24 @@ const strapi = new Strapi(apiUrl);
     }
 
      render() {
+         if (!this.props.isAuthenticated) return <div>Please <NavLink activeClassName="active" to='/signin'>Sign in</NavLink> or <NavLink activeClassName="active" to='/signup'>Sign up</NavLink> </div>;
          return (
              <Fragment>
                  <h1 style={{display: 'inline-block', marginRight: '20px'}} className="title">Books</h1> <Link to='/books/new'><button className="button is-primary">New book</button></Link>
-                 <Loader show={this.state.loading}/>
-                 {!this.state.loading && !this.state.books.length && <div>No books found.</div>}
+                 <Loader show={this.props.books.loading && this.props.books.list===null}/>
+                 {!this.props.books.loading && !this.props.books.list?.length && <div>No books found.</div>}
                  {
-                    !this.state.loading && 
+                    !this.props.books.loading && 
                     <Fragment>
                     <div className="row columns is-multiline">
-                        {this.state.books.map(book=>(
+                        {this.props.books.list?.map(book=>(
                             <div key={book.id} className="column is-4">
                                 <div className="card large">
                                     <div className="card-content">
                                         <p className="subtitle is-4">{book.name}</p>
-                                        <p className="subtitle is-6"><label>Author: </label><b>{book.author.name}</b></p>
+                                        <p className="subtitle is-6"><label>Author: </label><b>{book.author?.name}</b></p>
                                         <p className="subtitle is-6"><label>Year: </label><b>{book.year}</b></p>
-                                        <p style={{textAlign: 'right'}}><label className="favorite-label">Favorite</label> <input name={`favourite-${book.id}`}  id={`favourite-${book.id}`} type="checkbox" checked={book.favourite} onChange={(event)=>{this.handleChange(event, book.id)}}/></p>
+                                        <p style={{textAlign: 'right'}}><label htmlFor={`favourite-${book.id}`} className="favorite-label">Favorite</label> <input name={`favourite-${book.id}`}  id={`favourite-${book.id}`} type="checkbox" checked={book.favourite} onChange={(event)=>{this.handleChange(event, book.id)}}/></p>
                                     </div>
                                 </div>
                             </div>
@@ -66,5 +52,10 @@ const strapi = new Strapi(apiUrl);
          );
      }
  }
+
+ const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    books: state.books
+})
  
- export default Books;
+export default connect(mapStateToProps, {editBook, loadBooks})(Books);

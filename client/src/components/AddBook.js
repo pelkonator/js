@@ -1,51 +1,31 @@
 import React, { Component, Fragment } from 'react';
-import Strapi from 'strapi-sdk-javascript/build/main'
+import strapi from '../utils/strapi';
 import {Link } from 'react-router-dom'
 import Loader from './Loader';
-import history from "./../utils/history";
-const apiUrl = process.env.API_URL || 'http://localhost:1337'
-const strapi = new Strapi(apiUrl);
- 
+import {addBook, bookUpdateFieldNewRecord} from '../actions/books';
+import history from "./../utils/history"; 
+import { connect } from 'react-redux';
+import {loadAuthors} from '../actions/authors';
  class AddBook extends Component {
-     state = {
-        name:'',
-        author: 0,
-        year: '',
-        authors: [],
-        loading: true
-     }
-    async componentDidMount() {     
-        try {
-            const response = await strapi.request('POST', '/graphql', {data: {query: `query { authors {id name } }`}});
-            this.setState({authors: response.data.authors});
-        } catch (error) {
-            console.log(error);
-        }
-        this.setState({loading: false});
+    //  state = {
+    //     name:'',
+    //     author: 0,
+    //     year: '',
+    //  }
 
-        // try {
-        //     const response = await strapi.request('POST', '/graphql', {data: {query: `query { books {id name year favourite } }`}})
-        //     console.log(response);
-        //     this.setState({books: response.data.books})
-        // } catch (error) {
-        //     console.log(error);
-        // }
+     async componentDidMount() {        
+        this.props.loadAuthors();        
     }
 
     handleChange = (event) => {
         event.persist();
-        if (event.target.type==='checkbox') this.setState({[event.target.name]: event.target.checked});
-        else this.setState({[event.target.name]: event.target.value});
+        this.props.bookUpdateFieldNewRecord(event);         
     }
 
     addBook = async () => {
-        const {name, author, year } = this.state;
+        const {name, author, year } = this.props.books.newRecord;
         try {
-            await strapi.createEntry('books',{
-                name,
-                author,
-                year
-            });            
+            await this.props.addBook({name, author, year });
             history.push("/books");
         } catch (error) {
             console.log(error);
@@ -54,11 +34,12 @@ const strapi = new Strapi(apiUrl);
     }
 
      render() {
+        const {name, year, author} = this.props.books.newRecord;
          return (
             <Fragment>
-                <Loader show={this.state.loading}/>
+                <Loader show={this.props.authors.loading && this.props.authors.list===null}/>
                 {
-                    !this.state.loading &&
+                    !(this.props.authors.loading  && this.props.authors.list===null) &&
                     <Fragment>
                         <div style={{maxWidth: '500px', margin: '0 auto'}}>
                             <h1 className="title">New book</h1>
@@ -66,15 +47,15 @@ const strapi = new Strapi(apiUrl);
                                 <div className="field">
                                     <label className="label">Name</label>
                                     <div className="control">
-                                        <input  class="input" placeholder="Name" name="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                                        <input className="input" placeholder="Name" name="name" type="text" value={name} onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="field">
                                     <label className="label">Author</label>
-                                    <div style={{display:'inline-block'}} class="select">
-                                        <select value={this.state.author} onChange={this.handleChange}  id="author" name="author">
+                                    <div style={{display:'inline-block'}} className="select">
+                                        <select value={author} onChange={this.handleChange}  id="author" name="author">
                                             <option key="0">Choose an author</option>
-                                            {this.state.authors.map(author=>{
+                                            {this.props.authors.list?.map(author=>{
                                                 return <option key={author.id} value={author.id}>{author.name}</option>
                                             })}
                                         </select>
@@ -84,10 +65,10 @@ const strapi = new Strapi(apiUrl);
                                 <div className="field">
                                     <label className="label">Year</label>
                                     <div className="control">
-                                        <input  class="input" placeholder="Year" name="year"  type="number" value={this.state.year} onChange={this.handleChange} />
+                                        <input  className="input" placeholder="Year" name="year"  type="number" value={year} onChange={this.handleChange} />
                                     </div>
                                 </div>
-                                <button style={{marginBottom: '20px'}}  onClick={this.addBook} disabled={!this.state.name || !this.state.author || !this.state.year} className="button is-primary">Submit</button>
+                                <button style={{marginBottom: '20px'}}  onClick={this.addBook} disabled={!name || !author || !year} className="button is-primary">Submit</button>
                             </div>
                             <Link to='/books'>Back</Link>
                         </div>
@@ -99,4 +80,9 @@ const strapi = new Strapi(apiUrl);
      }
  }
  
- export default AddBook;
+ const mapStateToProps = state => ({
+    authors: state.authors,
+    books: state.books
+})
+ 
+export default connect(mapStateToProps, {addBook, loadAuthors, bookUpdateFieldNewRecord})(AddBook);

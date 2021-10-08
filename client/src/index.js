@@ -1,45 +1,12 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Switch, Route, Redirect } from 'react-router-dom';
+//import './index.css';
 import App from './components/App';
-import Signin from './components/Signin';
-import Books from './components/Books';
-import Signup from './components/Signup';
-import AddBook from './components/AddBook';
-import AddAuthor from './components/AddAuthor';
-import Navbar from './components/Navbar';
-import {getToken} from './utils';
-import history from "./utils/history";
-import "gestalt/dist/gestalt.css";
-import 'bulma/css/bulma.min.css';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
 
-const PrivateRoute = ({component:Component, ...rest}) => (
-    <Route {...rest} render={props=> (
-        getToken()!==null ? 
-            <Component {...props} /> : <Redirect to={{pathname: '/signin', state: {from: props.location} }}/>
-    )}/>
-)
+ReactDOM.render(<App />, document.getElementById('root'));
 
-const Root = () => (
-    <Router history={history}>
-        <Fragment>
-            <Navbar/>
-            <div className="container">
-                <div className="section">
-                    <Switch>
-                        <Route component={App} exact path="/" />
-                        <Route component={Signin} path="/signin" />
-                        <Route component={Signup} path="/signup" />
-                        <Route component={AddBook} path="/books/new" />
-                        <Route component={AddAuthor} path="/authors/new" />
-                        <Route component={Books} path="/books" />                
-                    </Switch>                    
-                </div>
-            </div>
-        </Fragment>
-    </Router>
-)
-
-ReactDOM.render(<Root />, document.getElementById('root'));
-registerServiceWorker();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
